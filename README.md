@@ -60,7 +60,7 @@ $$
 \text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
 $$
 
-với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $\text{tabu\_tenure}$. Lời giải tốt nhất được cập nhật nếu cải thiện.
+với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $tabu\_tenure$. Lời giải tốt nhất được cập nhật nếu cải thiện.
 
 **Tham số cài đặt:**
 - `max_iter = 800` – số vòng lặp tối đa.
