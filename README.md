@@ -60,7 +60,7 @@ $$
 \text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
 $$
 
-với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $tabu\_tenure$. Lời giải tốt nhất được cập nhật nếu cải thiện.
+với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $\text{tabu tenure}$. Lời giải tốt nhất được cập nhật nếu cải thiện.
 
 **Tham số cài đặt:**
 - `max_iter = 800` – số vòng lặp tối đa.
@@ -103,7 +103,7 @@ $$
 Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
 $$
-\lambda = \text{lambda\_factor} \times \bar{d}, \quad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
+\lambda = \text{lambda factor} \times \bar{d}, \quad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
 $$
 
 **Tham số cài đặt:**
