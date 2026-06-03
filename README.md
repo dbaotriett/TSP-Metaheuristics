@@ -39,13 +39,13 @@ với $\Pi_N$ là tập tất cả các hoán vị vòng quanh.
 
 ## Toán tử 2-opt
 
-Cho hai chỉ số $i, j$ ($1 \le i < j \le n$), toán tử 2-opt đảo ngược đoạn từ $i+1$ đến $j$ và thay hai cạnh $(\pi_i, \pi_{i+1})$, $(\pi_j, \pi_{j+1})$ bằng $(\pi_i, \pi_j)$ và $(\pi_{i+1}, \pi_{j+1})$. Sự thay đổi độ dài $\Delta$ được tính:
+Cho hai chỉ số $i, j$ ($1 \le i \lt j \le n$), toán tử 2-opt đảo ngược đoạn từ $i+1$ đến $j$ và thay hai cạnh $(\pi_i, \pi_{i+1})$, $(\pi_j, \pi_{j+1})$ bằng $(\pi_i, \pi_j)$ và $(\pi_{i+1}, \pi_{j+1})$. Sự thay đổi độ dài $\Delta$ được tính:
 
 $$
 \Delta = d_{\pi_i, \pi_j} + d_{\pi_{i+1}, \pi_{j+1}} - d_{\pi_i, \pi_{i+1}} - d_{\pi_j, \pi_{j+1}}
 $$
 
-Nếu $\Delta < 0$, hành trình mới ngắn hơn.
+Nếu $\Delta \lt 0$, hành trình mới ngắn hơn.
 
 ## Mô hình các thuật toán
 
@@ -56,10 +56,10 @@ Tabu Search là phương pháp tìm kiếm dựa trên bộ nhớ ngắn hạn n
 Tại mỗi bước, thuật toán chọn bước di chuyển $m$ (ứng với cặp $i,j$) tối thiểu hóa độ biến thiên $\Delta(m)$ trong số các bước không bị cấm hoặc thỏa mãn **tiêu chuẩn khát vọng** (aspiration criterion):
 
 $$
-\text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
+Aspiration(m) \equiv f(\pi) + \Delta(m) \lt f(\pi^*)
 $$
 
-với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $\text{tabu tenure}$. Lời giải tốt nhất được cập nhật nếu cải thiện.
+với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng tham số **tabu\_tenure**. Lời giải tốt nhất được cập nhật nếu cải thiện.
 
 **Tham số thực nghiệm:**
 
@@ -71,14 +71,14 @@ với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện
 Simulated Annealing mô phỏng quá trình ủ kim loại, cho phép chấp nhận bước di chuyển xấu với xác suất giảm dần theo **nhiệt độ** $T$. Gọi $\Delta = f(\pi') - f(\pi)$ là độ thay đổi chi phí khi chuyển từ $\pi$ sang $\pi'$. Xác suất chấp nhận bước di chuyển được cho bởi tiêu chuẩn Metropolis:
 
 $$
-P(\text{accept}) = 
+P(accept) = 
 \begin{cases} 
 1 & \text{if } \Delta \le 0 \\
-\exp\left(-\frac{\Delta}{T}\right) & \text{if } \Delta > 0
+\exp(-\Delta/T) & \text{if } \Delta \gt 0
 \end{cases}
 $$
 
-Lịch làm lạnh hình học: $T_{k+1} = \alpha \cdot T_k$, với $\alpha \in (0,1)$. Quá trình dừng khi $T < T_{\text{final}}$.
+Lịch làm lạnh hình học: $T_{k+1} = \alpha \cdot T_k$, với $\alpha \in (0,1)$. Quá trình dừng khi $T \lt T_{final}$.
 
 **Tham số thực nghiệm:**
 
@@ -98,13 +98,13 @@ $$
 trong đó $\lambda$ là tham số điều chỉnh. Mỗi khi local search rơi vào cực trị địa phương của $h$, GLS tính **utility** của mỗi cạnh $e$ thuộc lời giải hiện tại:
 
 $$
-\text{util}(e) = \frac{d_e}{1 + p_e}
+util(e) = \frac{d_e}{1 + p_e}
 $$
 
 Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
 $$
-\lambda = \text{lambda factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
+\lambda = \lambda_{factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i \lt j} d_{ij}}{\binom{n}{2}}
 $$
 
 **Tham số thực nghiệm:**
