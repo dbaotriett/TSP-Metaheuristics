@@ -103,7 +103,7 @@ $$
 Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
 $$
-\lambda = \text{lambda factor} \times \bar{d}, \quad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
+\lambda = \mathrm{lambda\_factor}\,\bar d,\qquad \bar d = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
 $$
 
 **Tham số cài đặt:**
