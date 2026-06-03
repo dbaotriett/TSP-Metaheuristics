@@ -91,9 +91,7 @@ $$\text{util}(e) = \frac{d_e}{1 + p_e}$$
 
 Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
-$$\lambda = \text{lambda\_factor} \cdot \bar{d},
-\qquad
-\bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}$$
+$$\lambda = \mathrm{lambda~factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}$$
 
 **Tham số thực nghiệm:**
 
