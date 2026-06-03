@@ -1,4 +1,3 @@
-```markdown
 # TSP-Metaheuristics: Giải bài toán Người giao hàng bằng Tabu Search, Simulated Annealing và Guided Local Search
 
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
