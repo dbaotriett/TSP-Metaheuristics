@@ -1,6 +1,3 @@
-Dưới đây là README đã được **viết lại hoàn chỉnh**, bổ sung **mô hình toán học chi tiết cho từng thuật toán** (Tabu Search, Simulated Annealing, Guided Local Search) theo đúng phong cách học thuật, sử dụng LaTeX chuẩn. Bạn có thể thay thế nội dung file `README.md` hiện tại bằng bản này.
-
-```markdown
 # TSP-Metaheuristics: Giải bài toán Người giao hàng bằng Tabu Search, Simulated Annealing và Guided Local Search
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -161,6 +158,3 @@ Thực hiện **5 lần chạy** cho mỗi thuật toán trên 6 instance TSPLIB
 ## Giấy phép
 
 Dự án được phân phối theo giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
-```
-
-**Giải thích bổ sung:** Phần mô hình toán của từng thuật toán được trình bày dưới dạng công thức và mô tả ngắn gọn, đúng với cài đặt trong code. Bạn chỉ cần copy-paste toàn bộ đoạn trên vào file `README.md` là được. Nếu cần thêm bất kỳ chỉnh sửa nào (ví dụ thêm tài liệu tham khảo, thay đổi tham số), hãy cho tôi biết.
