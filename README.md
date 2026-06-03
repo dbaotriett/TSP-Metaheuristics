@@ -1,6 +1,9 @@
+Dưới đây là README đã được **viết lại hoàn chỉnh**, bổ sung **mô hình toán học chi tiết cho từng thuật toán** (Tabu Search, Simulated Annealing, Guided Local Search) theo đúng phong cách học thuật, sử dụng LaTeX chuẩn. Bạn có thể thay thế nội dung file `README.md` hiện tại bằng bản này.
+
+```markdown
 # TSP-Metaheuristics: Giải bài toán Người giao hàng bằng Tabu Search, Simulated Annealing và Guided Local Search
 
-[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 Dự án này cài đặt ba thuật toán metaheuristic kinh điển cho **bài toán người giao hàng đối xứng (Symmetric TSP)**:
@@ -8,66 +11,107 @@ Dự án này cài đặt ba thuật toán metaheuristic kinh điển cho **bài
 - **Simulated Annealing (SA)**
 - **Guided Local Search (GLS)**
 
-Tất cả đều sử dụng phép hoán đổi **2-opt** và được đánh giá trên các bộ dữ liệu chuẩn từ TSPLIB. Dưới đây trình bày chi tiết mô hình toán học, cài đặt tham số và kết quả thực nghiệm.
+Tất cả đều sử dụng phép biến đổi **2-opt** và được đánh giá trên các bộ dữ liệu chuẩn từ TSPLIB. Dưới đây trình bày chi tiết mô hình toán học của bài toán, các thuật toán, tham số cài đặt và kết quả thực nghiệm.
 
 ## Mục lục
-- [Mô hình toán học](#mô-hình-toán-học)
-- [Các thuật toán và tham số](#các-thuật-toán-và-tham-số)
+- [Mô hình bài toán TSP](#mô-hình-bài-toán-tsp)
+- [Toán tử 2-opt](#toán-tử-2-opt)
+- [Mô hình các thuật toán](#mô-hình-các-thuật-toán)
+  - [1. Tabu Search](#1-tabu-search-ts)
+  - [2. Simulated Annealing](#2-simulated-annealing-sa)
+  - [3. Guided Local Search](#3-guided-local-search-gls)
 - [Cấu trúc dự án](#cấu-trúc-dự-án)
 - [Cài đặt và thực nghiệm](#cài-đặt-và-thực-nghiệm)
 - [Kết quả thực nghiệm](#kết-quả-thực-nghiệm)
 - [Giấy phép](#giấy-phép)
 
-## Mô hình toán học
+## Mô hình bài toán TSP
 
-### Bài toán TSP
-Cho tập hợp \(N = \{1, 2, \dots, n\}\) thành phố và ma trận khoảng cách đối xứng \(D = [d_{ij}]\) với \(d_{ij} = d_{ji} \ge 0\) và \(d_{ii} = 0\). Một hành trình (tour) là một hoán vị vòng quanh \(\pi = (\pi_1, \pi_2, \dots, \pi_n)\), trong đó \(\pi_{n+1} = \pi_1\). Chiều dài hành trình được xác định bởi:
+Cho tập hợp \( N = \{1, 2, \dots, n\} \) thành phố và ma trận khoảng cách đối xứng \( D = [d_{ij}] \) với \( d_{ij} = d_{ji} \ge 0 \) và \( d_{ii} = 0 \). Một hành trình (tour) là một hoán vị vòng quanh \( \pi = (\pi_1, \pi_2, \dots, \pi_n) \), trong đó \( \pi_{n+1} = \pi_1 \). Chiều dài hành trình được xác định bởi:
 
 \[
 f(\pi) = \sum_{k=1}^{n} d_{\pi_k, \pi_{k+1}}
 \]
 
-Mục tiêu là tìm \(\pi^*\) sao cho:
+Mục tiêu là tìm \( \pi^* \) sao cho:
 
 \[
 \pi^* = \arg\min_{\pi \in \Pi_N} f(\pi)
 \]
 
-với \(\Pi_N\) là tập tất cả các hoán vị vòng quanh.
+với \( \Pi_N \) là tập tất cả các hoán vị vòng quanh.
 
-### Toán tử 2-opt
-Cho hai chỉ số \(i, j\) (\(1 \le i < j \le n\)), toán tử 2-opt đảo ngược đoạn từ \(i+1\) đến \(j\) và thay hai cạnh \((\pi_i, \pi_{i+1})\), \((\pi_j, \pi_{j+1})\) bằng \((\pi_i, \pi_j)\) và \((\pi_{i+1}, \pi_{j+1})\). Sự thay đổi độ dài (delta) được tính:
+## Toán tử 2-opt
+
+Cho hai chỉ số \( i, j \) (\( 1 \le i < j \le n \)), toán tử 2-opt đảo ngược đoạn từ \( i+1 \) đến \( j \) và thay hai cạnh \( (\pi_i, \pi_{i+1}) \), \( (\pi_j, \pi_{j+1}) \) bằng \( (\pi_i, \pi_j) \) và \( (\pi_{i+1}, \pi_{j+1}) \). Sự thay đổi độ dài \( \Delta \) được tính:
 
 \[
 \Delta = d_{\pi_i, \pi_j} + d_{\pi_{i+1}, \pi_{j+1}} - d_{\pi_i, \pi_{i+1}} - d_{\pi_j, \pi_{j+1}}
 \]
 
-Nếu \(\Delta < 0\), hành trình mới ngắn hơn.
+Nếu \( \Delta < 0 \), hành trình mới ngắn hơn.
 
-## Các thuật toán và tham số
+## Mô hình các thuật toán
 
 ### 1. Tabu Search (TS)
-- **Ý tưởng:** Duy trì danh sách cấm (tabu list) các cạnh vừa bị loại bỏ để tránh quay lại. Cho phép chấp nhận bước bị cấm nếu nó tạo ra lời giải tốt hơn lời giải tốt nhất đã biết (tiêu chuẩn khát vọng).
-- **Tham số cài đặt:**
-  - `max_iter = 800` – số vòng lặp tối đa.
-  - `tabu_tenure = 20` – số vòng lặp một bước di chuyển bị cấm.
-- **Lân cận:** Duyệt toàn bộ các cặp (i, j) để chọn bước tốt nhất.
+
+Tabu Search là phương pháp tìm kiếm dựa trên bộ nhớ ngắn hạn nhằm vượt khỏi cực trị địa phương. Gọi \( \pi \) là lời giải hiện tại, \( N(\pi) \) là tập lân cận (các hoán vị đạt được bởi một phép 2-opt). Tabu Search duy trì một danh sách cấm \( \mathcal{T} \) chứa các **cặp cạnh bị xóa** gần đây. Mỗi mục trong \( \mathcal{T} \) có dạng \( (e_1, e_2) \) với \( e_1 = (\pi_i, \pi_{i+1}), e_2 = (\pi_j, \pi_{j+1}) \). 
+
+Tại mỗi bước, thuật toán chọn bước di chuyển \( m \) (ứng với cặp \( i,j \)) tối thiểu hóa độ biến thiên \( \Delta(m) \) trong số các bước không bị cấm hoặc thỏa mãn **tiêu chuẩn khát vọng** (aspiration criterion):  
+
+\[
+\text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
+\]
+
+với \( \pi^* \) là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào \( \mathcal{T} \) với thời gian cấm bằng \( \text{tabu\_tenure} \). Lời giải tốt nhất được cập nhật nếu cải thiện.
+
+**Tham số cài đặt:**
+- `max_iter = 800` – số vòng lặp tối đa.
+- `tabu_tenure = 20` – số vòng lặp một bước di chuyển bị cấm.
 
 ### 2. Simulated Annealing (SA)
-- **Ý tưởng:** Mô phỏng quá trình ủ kim loại: chấp nhận bước xấu với xác suất \( \exp(-\Delta / T) \) (Metropolis), nhiệt độ giảm dần theo lịch hình học.
-- **Tham số cài đặt:**
-  - `init_temp = 2000` – nhiệt độ ban đầu.
-  - `final_temp = 0.1` – nhiệt độ kết thúc.
-  - `cooling_rate = 0.999` – hệ số giảm nhiệt (\(\alpha\)).
-  - `inner_iter = 150` – số bước lặp tại mỗi mức nhiệt.
-- **Lân cận:** Chọn ngẫu nhiên một cặp (i, j) mỗi bước.
+
+Simulated Annealing mô phỏng quá trình ủ kim loại, cho phép chấp nhận bước di chuyển xấu với xác suất giảm dần theo **nhiệt độ** \( T \). Gọi \( \Delta = f(\pi') - f(\pi) \) là độ thay đổi chi phí khi chuyển từ \( \pi \) sang \( \pi' \). Xác suất chấp nhận bước di chuyển được cho bởi tiêu chuẩn Metropolis:
+
+\[
+P(\text{accept}) = 
+\begin{cases} 
+1 & \text{nếu } \Delta \le 0 \\
+\exp\left(-\frac{\Delta}{T}\right) & \text{nếu } \Delta > 0
+\end{cases}
+\]
+
+Lịch làm lạnh hình học: \( T_{k+1} = \alpha \cdot T_k \), với \( \alpha \in (0,1) \). Quá trình dừng khi \( T < T_{\text{final}} \).
+
+**Tham số cài đặt:**
+- `init_temp = 2000` – nhiệt độ ban đầu.
+- `final_temp = 0.1` – nhiệt độ kết thúc.
+- `cooling_rate = 0.999` – hệ số \( \alpha \).
+- `inner_iter = 150` – số bước lặp tại mỗi mức nhiệt.
 
 ### 3. Guided Local Search (GLS)
-- **ý tưởng:** Đưa các khoản phạt (penalty) vào hàm mục tiêu. Mỗi khi rơi vào cực trị địa phương, tăng phạt cho (các) cạnh có **utility** cao nhất: \( \text{util}(e) = \frac{d_e}{1+p_e} \). Hàm mục tiêu mở rộng: \( h(\pi) = f(\pi) + \lambda \sum_{e\in\pi} p_e \).
-- **Tham số cài đặt:**
-  - `max_iter = 500` – số lần gọi local search.
-  - `lambda_factor = 0.4` – hệ số \(\lambda\) được tính bằng \( \lambda = \text{lambda\_factor} \times \text{avg\_edge} \), với avg_edge là độ dài trung bình của tất cả các cạnh trong đồ thị.
-- **Lân cận:** Greedy 2-opt tối thiểu hóa hàm \(h(\pi)\).
+
+Guided Local Search đưa các **khoản phạt** vào hàm mục tiêu để hướng tìm kiếm tránh các đặc trưng (features) không mong muốn. Trong TSP, mỗi cạnh \( e = (u,v) \) được gán một biến phạt \( p_e \) (khởi tạo bằng 0). Hàm mục tiêu mở rộng (augmented cost) được định nghĩa:
+
+\[
+h(\pi) = f(\pi) + \lambda \sum_{e \in \pi} p_e
+\]
+
+trong đó \( \lambda \) là tham số điều chỉnh. Mỗi khi local search rơi vào cực trị địa phương của \( h \), GLS tính **utility** của mỗi cạnh \( e \) thuộc lời giải hiện tại:
+
+\[
+\text{util}(e) = \frac{d_e}{1 + p_e}
+\]
+
+Các cạnh có utility lớn nhất sẽ bị phạt: \( p_e \leftarrow p_e + 1 \). Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số \( \lambda \) được xác định theo công thức thực nghiệm:
+
+\[
+\lambda = \text{lambda\_factor} \times \bar{d}, \quad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
+\]
+
+**Tham số cài đặt:**
+- `max_iter = 500` – số lần gọi local search.
+- `lambda_factor = 0.4` – hệ số nhân.
 
 ## Cấu trúc dự án
 ```
@@ -118,3 +162,5 @@ Thực hiện **5 lần chạy** cho mỗi thuật toán trên 6 instance TSPLIB
 
 Dự án được phân phối theo giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
 ```
+
+**Giải thích bổ sung:** Phần mô hình toán của từng thuật toán được trình bày dưới dạng công thức và mô tả ngắn gọn, đúng với cài đặt trong code. Bạn chỉ cần copy-paste toàn bộ đoạn trên vào file `README.md` là được. Nếu cần thêm bất kỳ chỉnh sửa nào (ví dụ thêm tài liệu tham khảo, thay đổi tham số), hãy cho tôi biết.
