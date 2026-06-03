@@ -10,28 +10,30 @@ Tất cả đều sử dụng phép biến đổi **2-opt** và được đánh 
 
 ## Mục lục
 
-* [Mô hình bài toán TSP](https://www.google.com/search?q=%23m%C3%B4-h%C3%ACnh-b%C3%A0i-to%C3%A1n-tsp)
-* [Toán tử 2-opt](https://www.google.com/search?q=%23to%C3%A1n-t%E1%BB%AD-2-opt)
-* [Mô hình các thuật toán](https://www.google.com/search?q=%23m%C3%B4-h%C3%ACnh-c%C3%A1c-thu%E1%BA%ADt-to%C3%A1n)
-* [1. Tabu Search](https://www.google.com/search?q=%231-tabu-search-ts)
-* [2. Simulated Annealing](https://www.google.com/search?q=%232-simulated-annealing-sa)
-* [3. Guided Local Search](https://www.google.com/search?q=%233-guided-local-search-gls)
-
-
-* [Cấu trúc dự án](https://www.google.com/search?q=%23c%E1%BA%A5u-tr%C3%BAc-d%E1%BB%B1-%C3%A1n)
-* [Cài đặt và thực nghiệm](https://www.google.com/search?q=%23c%C3%A0i-%C4%91%E1%BA%B7t-v%C3%A0-th%E1%BB%B1c-nghi%E1%BB%87m)
-* [Kết quả thực nghiệm](https://www.google.com/search?q=%23k%E1%BA%BFt-qu%E1%BA%A3-th%E1%BB%B1c-nghi%E1%BB%87m)
-* [Giấy phép](https://www.google.com/search?q=%23gi%E1%BA%A5y-ph%C3%A9p)
+* [Mô hình bài toán TSP](#mô-hình-bài-toán-tsp)
+* [Toán tử 2-opt](#toán-tử-2-opt)
+* [Mô hình các thuật toán](#mô-hình-các-thuật-toán)
+  * [1. Tabu Search](#1-tabu-search-ts)
+  * [2. Simulated Annealing](#2-simulated-annealing-sa)
+  * [3. Guided Local Search](#3-guided-local-search-gls)
+* [Cấu trúc dự án](#cấu-trúc-dự-án)
+* [Cài đặt và thực nghiệm](#cài-đặt-và-thực-nghiệm)
+* [Kết quả thực nghiệm](#kết-quả-thực-nghiệm)
+* [Giấy phép](#giấy-phép)
 
 ## Mô hình bài toán TSP
 
 Cho tập hợp $N = \{1, 2, \dots, n\}$ thành phố và ma trận khoảng cách đối xứng $D = [d_{ij}]$ với $d_{ij} = d_{ji} \ge 0$ và $d_{ii} = 0$. Một hành trình (tour) là một hoán vị vòng quanh $\pi = (\pi_1, \pi_2, \dots, \pi_n)$, trong đó $\pi_{n+1} = \pi_1$. Chiều dài hành trình được xác định bởi:
 
-$$f(\pi) = \sum_{k=1}^{n} d_{\pi_k, \pi_{k+1}}$$
+$$
+f(\pi) = \sum_{k=1}^{n} d_{\pi_k, \pi_{k+1}}
+$$
 
 Mục tiêu là tìm $\pi^*$ sao cho:
 
-$$\pi^* = \arg\min_{\pi \in \Pi_N} f(\pi)$$
+$$
+\pi^* = \arg\min_{\pi \in \Pi_N} f(\pi)
+$$
 
 với $\Pi_N$ là tập tất cả các hoán vị vòng quanh.
 
@@ -39,7 +41,9 @@ với $\Pi_N$ là tập tất cả các hoán vị vòng quanh.
 
 Cho hai chỉ số $i, j$ ($1 \le i < j \le n$), toán tử 2-opt đảo ngược đoạn từ $i+1$ đến $j$ và thay hai cạnh $(\pi_i, \pi_{i+1})$, $(\pi_j, \pi_{j+1})$ bằng $(\pi_i, \pi_j)$ và $(\pi_{i+1}, \pi_{j+1})$. Sự thay đổi độ dài $\Delta$ được tính:
 
-$$\Delta = d_{\pi_i, \pi_j} + d_{\pi_{i+1}, \pi_{j+1}} - d_{\pi_i, \pi_{i+1}} - d_{\pi_j, \pi_{j+1}}$$
+$$
+\Delta = d_{\pi_i, \pi_j} + d_{\pi_{i+1}, \pi_{j+1}} - d_{\pi_i, \pi_{i+1}} - d_{\pi_j, \pi_{j+1}}
+$$
 
 Nếu $\Delta < 0$, hành trình mới ngắn hơn.
 
@@ -51,7 +55,9 @@ Tabu Search là phương pháp tìm kiếm dựa trên bộ nhớ ngắn hạn n
 
 Tại mỗi bước, thuật toán chọn bước di chuyển $m$ (ứng với cặp $i,j$) tối thiểu hóa độ biến thiên $\Delta(m)$ trong số các bước không bị cấm hoặc thỏa mãn **tiêu chuẩn khát vọng** (aspiration criterion):
 
-$$\text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)$$
+$$
+\text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
+$$
 
 với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $\text{tabu tenure}$. Lời giải tốt nhất được cập nhật nếu cải thiện.
 
@@ -64,11 +70,13 @@ với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện
 
 Simulated Annealing mô phỏng quá trình ủ kim loại, cho phép chấp nhận bước di chuyển xấu với xác suất giảm dần theo **nhiệt độ** $T$. Gọi $\Delta = f(\pi') - f(\pi)$ là độ thay đổi chi phí khi chuyển từ $\pi$ sang $\pi'$. Xác suất chấp nhận bước di chuyển được cho bởi tiêu chuẩn Metropolis:
 
-$$P(\text{accept}) = 
+$$
+P(\text{accept}) = 
 \begin{cases} 
 1 & \text{nếu } \Delta \le 0 \\
 \exp\left(-\frac{\Delta}{T}\right) & \text{nếu } \Delta > 0
-\end{cases}$$
+\end{cases}
+$$
 
 Lịch làm lạnh hình học: $T_{k+1} = \alpha \cdot T_k$, với $\alpha \in (0,1)$. Quá trình dừng khi $T < T_{\text{final}}$.
 
@@ -83,15 +91,21 @@ Lịch làm lạnh hình học: $T_{k+1} = \alpha \cdot T_k$, với $\alpha \in 
 
 Guided Local Search đưa các khoản phạt vào hàm mục tiêu để hướng tìm kiếm tránh các đặc trưng (features) không mong muốn. Trong TSP, mỗi cạnh $e = (u,v)$ được gán một biến phạt $p_e$ (khởi tạo bằng 0). Hàm mục tiêu mở rộng (augmented cost) được định nghĩa:
 
-$$h(\pi) = f(\pi) + \lambda \sum_{e \in \pi} p_e$$
+$$
+h(\pi) = f(\pi) + \lambda \sum_{e \in \pi} p_e
+$$
 
 trong đó $\lambda$ là tham số điều chỉnh. Mỗi khi local search rơi vào cực trị địa phương của $h$, GLS tính **utility** của mỗi cạnh $e$ thuộc lời giải hiện tại:
 
-$$\text{util}(e) = \frac{d_e}{1 + p_e}$$
+$$
+\text{util}(e) = \frac{d_e}{1 + p_e}
+$$
 
 Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
-$$\lambda = \mathrm{lambda~factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}$$
+$$
+\lambda = \text{lambda factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
+$$
 
 **Tham số thực nghiệm:**
 
@@ -100,7 +114,7 @@ $$\lambda = \mathrm{lambda~factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i
 
 ## Cấu trúc dự án
 
-```
+```text
 .
 ├── main.py                  # Chạy thực nghiệm, in bảng kết quả
 ├── algorithms/
@@ -119,7 +133,7 @@ $$\lambda = \mathrm{lambda~factor} \cdot \bar{d}, \qquad \bar{d} = \frac{\sum_{i
 1. **Yêu cầu:** Python 3.10 trở lên, không cần thư viện ngoài.
 2. **Clone dự án:**
 ```bash
-git clone https://github.com/yourusername/TSP-Metaheuristics.git
+git clone [https://github.com/yourusername/TSP-Metaheuristics.git](https://github.com/yourusername/TSP-Metaheuristics.git)
 cd TSP-Metaheuristics
 
 ```
