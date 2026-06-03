@@ -1,6 +1,6 @@
 # TSP-Metaheuristics: Giải bài toán Người giao hàng bằng Tabu Search, Simulated Annealing và Guided Local Search
 
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 Dự án này cài đặt ba thuật toán metaheuristic kinh điển cho **bài toán người giao hàng đối xứng (Symmetric TSP)**:
@@ -24,43 +24,43 @@ Tất cả đều sử dụng phép biến đổi **2-opt** và được đánh 
 
 ## Mô hình bài toán TSP
 
-Cho tập hợp \( N = \{1, 2, \dots, n\} \) thành phố và ma trận khoảng cách đối xứng \( D = [d_{ij}] \) với \( d_{ij} = d_{ji} \ge 0 \) và \( d_{ii} = 0 \). Một hành trình (tour) là một hoán vị vòng quanh \( \pi = (\pi_1, \pi_2, \dots, \pi_n) \), trong đó \( \pi_{n+1} = \pi_1 \). Chiều dài hành trình được xác định bởi:
+Cho tập hợp $N = \{1, 2, \dots, n\}$ thành phố và ma trận khoảng cách đối xứng $D = [d_{ij}]$ với $d_{ij} = d_{ji} \ge 0$ và $d_{ii} = 0$. Một hành trình (tour) là một hoán vị vòng quanh $\pi = (\pi_1, \pi_2, \dots, \pi_n)$, trong đó $\pi_{n+1} = \pi_1$. Chiều dài hành trình được xác định bởi:
 
-\[
+$$
 f(\pi) = \sum_{k=1}^{n} d_{\pi_k, \pi_{k+1}}
-\]
+$$
 
-Mục tiêu là tìm \( \pi^* \) sao cho:
+Mục tiêu là tìm $\pi^*$ sao cho:
 
-\[
+$$
 \pi^* = \arg\min_{\pi \in \Pi_N} f(\pi)
-\]
+$$
 
-với \( \Pi_N \) là tập tất cả các hoán vị vòng quanh.
+với $\Pi_N$ là tập tất cả các hoán vị vòng quanh.
 
 ## Toán tử 2-opt
 
-Cho hai chỉ số \( i, j \) (\( 1 \le i < j \le n \)), toán tử 2-opt đảo ngược đoạn từ \( i+1 \) đến \( j \) và thay hai cạnh \( (\pi_i, \pi_{i+1}) \), \( (\pi_j, \pi_{j+1}) \) bằng \( (\pi_i, \pi_j) \) và \( (\pi_{i+1}, \pi_{j+1}) \). Sự thay đổi độ dài \( \Delta \) được tính:
+Cho hai chỉ số $i, j$ ($1 \le i < j \le n$), toán tử 2-opt đảo ngược đoạn từ $i+1$ đến $j$ và thay hai cạnh $(\pi_i, \pi_{i+1})$, $(\pi_j, \pi_{j+1})$ bằng $(\pi_i, \pi_j)$ và $(\pi_{i+1}, \pi_{j+1})$. Sự thay đổi độ dài $\Delta$ được tính:
 
-\[
+$$
 \Delta = d_{\pi_i, \pi_j} + d_{\pi_{i+1}, \pi_{j+1}} - d_{\pi_i, \pi_{i+1}} - d_{\pi_j, \pi_{j+1}}
-\]
+$$
 
-Nếu \( \Delta < 0 \), hành trình mới ngắn hơn.
+Nếu $\Delta < 0$, hành trình mới ngắn hơn.
 
 ## Mô hình các thuật toán
 
 ### 1. Tabu Search (TS)
 
-Tabu Search là phương pháp tìm kiếm dựa trên bộ nhớ ngắn hạn nhằm vượt khỏi cực trị địa phương. Gọi \( \pi \) là lời giải hiện tại, \( N(\pi) \) là tập lân cận (các hoán vị đạt được bởi một phép 2-opt). Tabu Search duy trì một danh sách cấm \( \mathcal{T} \) chứa các **cặp cạnh bị xóa** gần đây. Mỗi mục trong \( \mathcal{T} \) có dạng \( (e_1, e_2) \) với \( e_1 = (\pi_i, \pi_{i+1}), e_2 = (\pi_j, \pi_{j+1}) \). 
+Tabu Search là phương pháp tìm kiếm dựa trên bộ nhớ ngắn hạn nhằm vượt khỏi cực trị địa phương. Gọi $\pi$ là lời giải hiện tại, $N(\pi)$ là tập lân cận (các hoán vị đạt được bởi một phép 2-opt). Tabu Search duy trì một danh sách cấm $\mathcal{T}$ chứa các **cặp cạnh bị xóa** gần đây. Mỗi mục trong $\mathcal{T}$ có dạng $(e_1, e_2)$ với $e_1 = (\pi_i, \pi_{i+1}), e_2 = (\pi_j, \pi_{j+1})$. 
 
-Tại mỗi bước, thuật toán chọn bước di chuyển \( m \) (ứng với cặp \( i,j \)) tối thiểu hóa độ biến thiên \( \Delta(m) \) trong số các bước không bị cấm hoặc thỏa mãn **tiêu chuẩn khát vọng** (aspiration criterion):  
+Tại mỗi bước, thuật toán chọn bước di chuyển $m$ (ứng với cặp $i,j$) tối thiểu hóa độ biến thiên $\Delta(m)$ trong số các bước không bị cấm hoặc thỏa mãn **tiêu chuẩn khát vọng** (aspiration criterion):  
 
-\[
+$$
 \text{aspiration}(m) \equiv f(\pi) + \Delta(m) < f(\pi^*)
-\]
+$$
 
-với \( \pi^* \) là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào \( \mathcal{T} \) với thời gian cấm bằng \( \text{tabu\_tenure} \). Lời giải tốt nhất được cập nhật nếu cải thiện.
+với $\pi^*$ là lời giải tốt nhất tìm được. Sau khi thực hiện, cặp cạnh bị xóa được thêm vào $\mathcal{T}$ với thời gian cấm bằng $\text{tabu\_tenure}$. Lời giải tốt nhất được cập nhật nếu cải thiện.
 
 **Tham số cài đặt:**
 - `max_iter = 800` – số vòng lặp tối đa.
@@ -68,43 +68,43 @@ với \( \pi^* \) là lời giải tốt nhất tìm được. Sau khi thực hi
 
 ### 2. Simulated Annealing (SA)
 
-Simulated Annealing mô phỏng quá trình ủ kim loại, cho phép chấp nhận bước di chuyển xấu với xác suất giảm dần theo **nhiệt độ** \( T \). Gọi \( \Delta = f(\pi') - f(\pi) \) là độ thay đổi chi phí khi chuyển từ \( \pi \) sang \( \pi' \). Xác suất chấp nhận bước di chuyển được cho bởi tiêu chuẩn Metropolis:
+Simulated Annealing mô phỏng quá trình ủ kim loại, cho phép chấp nhận bước di chuyển xấu với xác suất giảm dần theo **nhiệt độ** $T$. Gọi $\Delta = f(\pi') - f(\pi)$ là độ thay đổi chi phí khi chuyển từ $\pi$ sang $\pi'$. Xác suất chấp nhận bước di chuyển được cho bởi tiêu chuẩn Metropolis:
 
-\[
+$$
 P(\text{accept}) = 
 \begin{cases} 
 1 & \text{nếu } \Delta \le 0 \\
 \exp\left(-\frac{\Delta}{T}\right) & \text{nếu } \Delta > 0
 \end{cases}
-\]
+$$
 
-Lịch làm lạnh hình học: \( T_{k+1} = \alpha \cdot T_k \), với \( \alpha \in (0,1) \). Quá trình dừng khi \( T < T_{\text{final}} \).
+Lịch làm lạnh hình học: $T_{k+1} = \alpha \cdot T_k$, với $\alpha \in (0,1)$. Quá trình dừng khi $T < T_{\text{final}}$.
 
 **Tham số cài đặt:**
 - `init_temp = 2000` – nhiệt độ ban đầu.
 - `final_temp = 0.1` – nhiệt độ kết thúc.
-- `cooling_rate = 0.999` – hệ số \( \alpha \).
+- `cooling_rate = 0.999` – hệ số $\alpha$.
 - `inner_iter = 150` – số bước lặp tại mỗi mức nhiệt.
 
 ### 3. Guided Local Search (GLS)
 
-Guided Local Search đưa các **khoản phạt** vào hàm mục tiêu để hướng tìm kiếm tránh các đặc trưng (features) không mong muốn. Trong TSP, mỗi cạnh \( e = (u,v) \) được gán một biến phạt \( p_e \) (khởi tạo bằng 0). Hàm mục tiêu mở rộng (augmented cost) được định nghĩa:
+Guided Local Search đưa các khoản phạt vào hàm mục tiêu để hướng tìm kiếm tránh các đặc trưng (features) không mong muốn. Trong TSP, mỗi cạnh $e = (u,v)$ được gán một biến phạt $p_e$ (khởi tạo bằng 0). Hàm mục tiêu mở rộng (augmented cost) được định nghĩa:
 
-\[
+$$
 h(\pi) = f(\pi) + \lambda \sum_{e \in \pi} p_e
-\]
+$$
 
-trong đó \( \lambda \) là tham số điều chỉnh. Mỗi khi local search rơi vào cực trị địa phương của \( h \), GLS tính **utility** của mỗi cạnh \( e \) thuộc lời giải hiện tại:
+trong đó $\lambda$ là tham số điều chỉnh. Mỗi khi local search rơi vào cực trị địa phương của $h$, GLS tính **utility** của mỗi cạnh $e$ thuộc lời giải hiện tại:
 
-\[
+$$
 \text{util}(e) = \frac{d_e}{1 + p_e}
-\]
+$$
 
-Các cạnh có utility lớn nhất sẽ bị phạt: \( p_e \leftarrow p_e + 1 \). Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số \( \lambda \) được xác định theo công thức thực nghiệm:
+Các cạnh có utility lớn nhất sẽ bị phạt: $p_e \leftarrow p_e + 1$. Nhờ đó, những lời giải chứa các cạnh đắt (dài) sẽ bị “đánh thuế” và local search sẽ dần tránh chúng. Tham số $\lambda$ được xác định theo công thức thực nghiệm:
 
-\[
+$$
 \lambda = \text{lambda\_factor} \times \bar{d}, \quad \bar{d} = \frac{\sum_{i<j} d_{ij}}{\binom{n}{2}}
-\]
+$$
 
 **Tham số cài đặt:**
 - `max_iter = 500` – số lần gọi local search.
